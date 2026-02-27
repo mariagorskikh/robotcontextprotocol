@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="100%" stop-color="#111118"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="200" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00d4ff"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="300" fill="url(#bg)" rx="12"/>
+
+  <!-- Subtle grid -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-opacity="0.03" stroke-width="0.5"/>
+  </pattern>
+  <rect width="1200" height="300" fill="url(#grid)" rx="12"/>
+
+  <!-- Glow effect -->
+  <ellipse cx="600" cy="150" rx="400" ry="200" fill="url(#glow)"/>
+
+  <!-- Robot icon -->
+  <g transform="translate(380, 75)">
+    <!-- Robot head -->
+    <rect x="0" y="20" width="50" height="40" rx="8" fill="none" stroke="#00d4ff" stroke-width="2.5" stroke-opacity="0.9"/>
+    <!-- Eyes -->
+    <circle cx="16" cy="38" r="5" fill="#00d4ff" opacity="0.9"/>
+    <circle cx="34" cy="38" r="5" fill="#00d4ff" opacity="0.9"/>
+    <!-- Antenna -->
+    <line x1="25" y1="20" x2="25" y2="8" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7"/>
+    <circle cx="25" cy="6" r="3" fill="#00d4ff" opacity="0.7"/>
+    <!-- Body -->
+    <rect x="5" y="65" width="40" height="45" rx="6" fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.6"/>
+    <!-- Arms -->
+    <line x1="0" y1="75" x2="-15" y2="90" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.5" stroke-linecap="round"/>
+    <line x1="50" y1="75" x2="65" y2="90" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.5" stroke-linecap="round"/>
+    <!-- Connection lines going right -->
+    <line x1="65" y1="45" x2="100" y2="45" stroke="url(#accent)" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.5"/>
+    <line x1="65" y1="85" x2="100" y2="85" stroke="url(#accent)" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.5"/>
+  </g>
+
+  <!-- Protocol name -->
+  <text x="510" y="125" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="64" font-weight="800" letter-spacing="-2">
+    <tspan fill="#ffffff">A</tspan><tspan fill="#ffffff">R</tspan><tspan fill="#ffffff">P</tspan>
+  </text>
+
+  <!-- Full name -->
+  <text x="510" y="165" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="20" font-weight="400" fill="#888888" letter-spacing="0.5">
+    Autonomous Robot Protocol
+  </text>
+
+  <!-- Tagline -->
+  <text x="510" y="205" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="15" font-weight="400" fill="#555555" letter-spacing="0.3">
+    The open protocol for connecting LLM agents to physical robots
+  </text>
+
+  <!-- Bottom accent line -->
+  <rect x="0" y="296" width="1200" height="4" fill="url(#accent)" rx="0"/>
+</svg>

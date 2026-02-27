@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" fill="none">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="900" y2="340" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#0d1117"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00d4ff"/>
+      <stop offset="100%" stop-color="#0088cc"/>
+    </linearGradient>
+    <linearGradient id="purple" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#5b21b6"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="340" fill="url(#bg2)" rx="12"/>
+
+  <!-- LLM Agent Box -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="60" width="200" height="220" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  </g>
+  <rect x="40" y="60" width="200" height="4" rx="2" fill="url(#purple)"/>
+  <text x="140" y="96" font-family="system-ui, sans-serif" font-size="13" fill="#7c3aed" text-anchor="middle" font-weight="600" letter-spacing="1">LLM AGENT</text>
+  <text x="140" y="120" font-family="system-ui, sans-serif" font-size="11" fill="#8b949e" text-anchor="middle">ARP Client</text>
+
+  <!-- Agent items -->
+  <g font-family="system-ui, sans-serif" font-size="11">
+    <rect x="60" y="138" width="160" height="28" rx="6" fill="#1c1c2e" stroke="#7c3aed" stroke-width="0.5" stroke-opacity="0.3"/>
+    <text x="140" y="156" fill="#c9d1d9" text-anchor="middle">Claude / GPT / Llama</text>
+
+    <rect x="60" y="174" width="160" height="28" rx="6" fill="#1c1c2e" stroke="#7c3aed" stroke-width="0.5" stroke-opacity="0.3"/>
+    <text x="140" y="192" fill="#c9d1d9" text-anchor="middle">Planning Engine</text>
+
+    <rect x="60" y="210" width="160" height="28" rx="6" fill="#1c1c2e" stroke="#7c3aed" stroke-width="0.5" stroke-opacity="0.3"/>
+    <text x="140" y="228" fill="#c9d1d9" text-anchor="middle">Human Confirmation</text>
+
+    <rect x="60" y="246" width="160" height="28" rx="6" fill="#1c1c2e" stroke="#7c3aed" stroke-width="0.5" stroke-opacity="0.3"/>
+    <text x="140" y="264" fill="#c9d1d9" text-anchor="middle">Workspace Manager</text>
+  </g>
+
+  <!-- ARP Protocol Middle -->
+  <g filter="url(#shadow)">
+    <rect x="310" y="80" width="280" height="180" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  </g>
+  <rect x="310" y="80" width="280" height="4" rx="2" fill="url(#blue)"/>
+  <text x="450" y="116" font-family="system-ui, sans-serif" font-size="13" fill="#00d4ff" text-anchor="middle" font-weight="600" letter-spacing="1">ARP PROTOCOL</text>
+  <text x="450" y="136" font-family="system-ui, sans-serif" font-size="10" fill="#8b949e" text-anchor="middle">JSON-RPC 2.0 / WebSocket</text>
+
+  <!-- Protocol items -->
+  <g font-family="'Menlo', 'Monaco', monospace" font-size="10">
+    <text x="340" y="164" fill="#00d4ff" opacity="0.8">&#x25B6;</text>
+    <text x="358" y="164" fill="#c9d1d9">callTool("move_to", ...)</text>
+
+    <text x="340" y="184" fill="#00d4ff" opacity="0.8">&#x25B6;</text>
+    <text x="358" y="184" fill="#c9d1d9">subscribeContext("odom")</text>
+
+    <text x="340" y="204" fill="#e5534b" opacity="0.8">&#x25C0;</text>
+    <text x="358" y="204" fill="#c9d1d9">contextUpdate(pose_data)</text>
+
+    <text x="340" y="224" fill="#e5534b" opacity="0.8">&#x25C0;</text>
+    <text x="358" y="224" fill="#c9d1d9">requestConfirmation(...)</text>
+
+    <text x="340" y="244" fill="#f0883e" opacity="0.8">&#x26A0;</text>
+    <text x="358" y="244" fill="#c9d1d9">emergencyStop("reason")</text>
+  </g>
+
+  <!-- Robot Box -->
+  <g filter="url(#shadow)">
+    <rect x="660" y="60" width="200" height="220" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  </g>
+  <rect x="660" y="60" width="200" height="4" rx="2" fill="url(#green)"/>
+  <text x="760" y="96" font-family="system-ui, sans-serif" font-size="13" fill="#10b981" text-anchor="middle" font-weight="600" letter-spacing="1">ROBOT</text>
+  <text x="760" y="120" font-family="system-ui, sans-serif" font-size="11" fill="#8b949e" text-anchor="middle">ARP Server</text>
+
+  <!-- Robot items -->
+  <g font-family="system-ui, sans-serif" font-size="11">
+    <rect x="680" y="138" width="160" height="28" rx="6" fill="#0d2818" stroke="#10b981" stroke-width="0.5" stroke-opacity="0.3"/>
+    <text x="760" y="156" fill="#c9d1d9" text-anchor="middle">Physical Tools</text>
+
+    <rect x="680" y="174" width="160" height="28" rx="6" fill="#0d2818" stroke="#10b981" stroke-width="0.5" stroke-opacity="0.3"/>
+    <text x="760" y="192" fill="#c9d1d9" text-anchor="middle">Sensor Streams</text>
+
+    <rect x="680" y="210" width="160" height="28" rx="6" fill="#0d2818" stroke="#10b981" stroke-width="0.5" stroke-opacity="0.3"/>
+    <text x="760" y="228" fill="#c9d1d9" text-anchor="middle">Safety Constraints</text>
+
+    <rect x="680" y="246" width="160" height="28" rx="6" fill="#0d2818" stroke="#10b981" stroke-width="0.5" stroke-opacity="0.3"/>
+    <text x="760" y="264" fill="#c9d1d9" text-anchor="middle">E-Stop</text>
+  </g>
+
+  <!-- Arrows -->
+  <line x1="240" y1="155" x2="310" y2="155" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.6"/>
+  <polygon points="308,151 316,155 308,159" fill="#7c3aed" opacity="0.6"/>
+
+  <line x1="310" y1="195" x2="240" y2="195" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.6"/>
+  <polygon points="242,191 234,195 242,199" fill="#00d4ff" opacity="0.6"/>
+
+  <line x1="590" y1="155" x2="660" y2="155" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.6"/>
+  <polygon points="658,151 666,155 658,159" fill="#00d4ff" opacity="0.6"/>
+
+  <line x1="660" y1="195" x2="590" y2="195" stroke="#10b981" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.6"/>
+  <polygon points="592,191 584,195 592,199" fill="#10b981" opacity="0.6"/>
+
+  <!-- Bottom label -->
+  <text x="450" y="320" font-family="system-ui, sans-serif" font-size="11" fill="#484f58" text-anchor="middle">Safety constraints enforced at the protocol level — cannot be overridden by the LLM</text>
+</svg>
