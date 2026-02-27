@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARP — Autonomous Robot Protocol</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --accent: #00d4ff;
+            --accent-dim: #00d4ff22;
+            --bg: #0a0a0a;
+            --surface: #111111;
+            --border: #1a1a1a;
+            --text: #e0e0e0;
+            --text-dim: #888888;
+            --mono: 'JetBrains Mono', monospace;
+            --sans: 'Inter', -apple-system, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: -0.5px;
+        }
+
+        nav .logo span {
+            color: var(--accent);
+        }
+
+        nav .links {
+            display: flex;
+            gap: 28px;
+        }
+
+        nav .links a {
+            color: var(--text-dim);
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav .links a:hover {
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 180px 0 100px;
+            text-align: center;
+        }
+
+        .hero .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-bottom: 32px;
+            font-family: var(--mono);
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 8vw, 80px);
+            font-weight: 700;
+            letter-spacing: -2px;
+            line-height: 1.05;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--accent), #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto 48px;
+            line-height: 1.6;
+        }
+
+        .hero .cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: #333;
+            text-decoration: none;
+        }
+
+        /* Sections */
+        section {
+            padding: 100px 0;
+        }
+
+        section h2 {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+
+        section .subtitle {
+            color: var(--text-dim);
+            font-size: 18px;
+            margin-bottom: 56px;
+            max-width: 600px;
+        }
+
+        /* Primitives Grid */
+        .primitives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .primitive-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            transition: border-color 0.2s;
+        }
+
+        .primitive-card:hover {
+            border-color: #333;
+        }
+
+        .primitive-card .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 16px;
+            background: var(--accent-dim);
+        }
+
+        .primitive-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .primitive-card p {
+            color: var(--text-dim);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .primitive-card .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: var(--mono);
+            margin-top: 12px;
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        /* Architecture */
+        .architecture-diagram {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 48px;
+            font-family: var(--mono);
+            font-size: 14px;
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.8;
+            color: var(--text-dim);
+            text-align: center;
+        }
+
+        .architecture-diagram .highlight {
+            color: var(--accent);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 32px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .comparison-table th {
+            color: var(--text-dim);
+            font-weight: 500;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .comparison-table td:first-child {
+            font-weight: 500;
+        }
+
+        .comparison-table .accent {
+            color: var(--accent);
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 32px;
+        }
+
+        .code-block .header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            font-family: var(--mono);
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        .code-block .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-block .dot.red { background: #ff5f57; }
+        .code-block .dot.yellow { background: #febc2e; }
+        .code-block .dot.green { background: #28c840; }
+
+        .code-block pre {
+            padding: 24px;
+            overflow-x: auto;
+            font-family: var(--mono);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .code-block .keyword { color: #c678dd; }
+        .code-block .string { color: #98c379; }
+        .code-block .comment { color: #5c6370; }
+        .code-block .function { color: #61afef; }
+        .code-block .decorator { color: #e5c07b; }
+        .code-block .param { color: #e06c75; }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 48px 0;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 14px;
+        }
+
+        footer .links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 24px;
+        }
+
+        footer a {
+            color: var(--text-dim);
+        }
+
+        footer a:hover {
+            color: var(--text);
+        }
+
+        /* Divider labels */
+        .section-label {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .hero { padding: 140px 0 60px; }
+            section { padding: 60px 0; }
+            nav .links { gap: 16px; }
+            .architecture-diagram { font-size: 11px; padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="container">
+        <div class="logo"><span>ARP</span></div>
+        <div class="links">
+            <a href="#primitives">Primitives</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#quickstart">Quick Start</a>
+            <a href="https://github.com/mariagorskikh/robotcontextprotocol">GitHub</a>
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="container">
+        <div class="badge">v0.1.0 &middot; Open Source &middot; Apache 2.0</div>
+        <h1>Autonomous<br>Robot <span>Protocol</span></h1>
+        <p>The open protocol for connecting LLM agents to physical robots. Safety-first, real-time, and built for autonomy.</p>
+        <div class="cta">
+            <a href="#quickstart" class="btn btn-primary">Get Started</a>
+            <a href="https://github.com/mariagorskikh/robotcontextprotocol" class="btn btn-secondary">View on GitHub</a>
+        </div>
+    </div>
+</section>
+
+<section id="primitives">
+    <div class="container">
+        <div class="section-label">Protocol Design</div>
+        <h2>Six primitives. Zero ambiguity.</h2>
+        <p class="subtitle">ARP defines three server primitives (robot to LLM) and three client primitives (LLM to robot) over JSON-RPC 2.0.</p>
+
+        <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 20px;">Server Primitives &mdash; Robot &rarr; LLM</h3>
+        <div class="primitives-grid" style="margin-bottom: 40px;">
+            <div class="primitive-card">
+                <div class="icon">&#9881;</div>
+                <h3>Physical Tools</h3>
+                <p>Callable robot actions with parameter schemas, safety metadata, preconditions, effects, and a full execution state machine.</p>
+                <span class="tag">arp.callTool</span>
+            </div>
+            <div class="primitive-card">
+                <div class="icon">&#128225;</div>
+                <h3>Physical Context</h3>
+                <p>Streaming sensor and state data — odometry, camera feeds, joint states, lidar — with coordinate frames and configurable rates.</p>
+                <span class="tag">arp.subscribeContext</span>
+            </div>
+            <div class="primitive-card">
+                <div class="icon">&#128737;</div>
+                <h3>Safety Constraints</h3>
+                <p>Non-overridable rules enforced at the protocol level. Velocity limits, workspace bounds, force limits, collision zones, emergency stop.</p>
+                <span class="tag">arp.listConstraints</span>
+            </div>
+        </div>
+
+        <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 20px;">Client Primitives &mdash; LLM &rarr; Robot</h3>
+        <div class="primitives-grid">
+            <div class="primitive-card">
+                <div class="icon">&#128221;</div>
+                <h3>Planning</h3>
+                <p>Server requests the LLM to generate or revise an action plan given the current state, available tools, and active constraints.</p>
+                <span class="tag">arp.requestPlan</span>
+            </div>
+            <div class="primitive-card">
+                <div class="icon">&#128204;</div>
+                <h3>Workspace</h3>
+                <p>Define physical and logical boundaries the robot operates within, including known objects and their types.</p>
+                <span class="tag">arp.setWorkspace</span>
+            </div>
+            <div class="primitive-card">
+                <div class="icon">&#9989;</div>
+                <h3>Confirmation</h3>
+                <p>Server requests human approval before executing dangerous actions. Auto-rejects on timeout. Safety level determines when required.</p>
+                <span class="tag">arp.requestConfirmation</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="architecture" style="padding-top: 60px;">
+    <div class="container">
+        <div class="section-label">How It Works</div>
+        <h2>Architecture</h2>
+        <p class="subtitle">ARP sits between the LLM agent and the robot hardware. The server runs on or near the robot; the client runs alongside your agent.</p>
+
+        <div class="architecture-diagram">
+<span class="highlight">LLM Agent</span>                   <span class="highlight">ARP Protocol</span>                  <span class="highlight">Robot</span>
+
+ ┌──────────┐        JSON-RPC 2.0 / WebSocket        ┌──────────┐
+ │          │                                         │          │
+ │  Claude  │ ──── callTool("move_to", ...) ────────► │  Server  │ ──► Motors
+ │  GPT     │ ──── subscribeContext("odom") ────────► │          │ ──► Sensors
+ │  Llama   │ ◄──── contextUpdate(pose_data) ──────── │  Safety  │ ◄── IMU
+ │  Agent   │ ◄──── requestConfirmation(...) ──────── │  Layer   │ ◄── Camera
+ │          │ ──── emergencyStop("reason") ─────────► │          │ ──► E-Stop
+ └──────────┘                                         └──────────┘
+  ARP Client                                           ARP Server
+        </div>
+    </div>
+</section>
+
+<section style="padding-top: 60px;">
+    <div class="container">
+        <div class="section-label">Comparison</div>
+        <h2>MCP vs ARP</h2>
+        <p class="subtitle">ARP is inspired by MCP but designed specifically for the unique challenges of physical robot control.</p>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>MCP</th>
+                    <th class="accent">ARP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Domain</td>
+                    <td>Digital tools & APIs</td>
+                    <td class="accent">Physical robots</td>
+                </tr>
+                <tr>
+                    <td>Safety</td>
+                    <td>Application-level</td>
+                    <td class="accent">Protocol-level enforcement</td>
+                </tr>
+                <tr>
+                    <td>Real-time</td>
+                    <td>Request/response</td>
+                    <td class="accent">Streaming context + progress</td>
+                </tr>
+                <tr>
+                    <td>E-Stop</td>
+                    <td>N/A</td>
+                    <td class="accent">Built-in emergency stop</td>
+                </tr>
+                <tr>
+                    <td>Confirmation</td>
+                    <td>N/A</td>
+                    <td class="accent">Human-in-the-loop primitive</td>
+                </tr>
+                <tr>
+                    <td>Coordinate Frames</td>
+                    <td>N/A</td>
+                    <td class="accent">Native support</td>
+                </tr>
+                <tr>
+                    <td>Transport</td>
+                    <td>stdio / SSE</td>
+                    <td class="accent">WebSocket (JSON-RPC 2.0)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="quickstart" style="padding-top: 60px;">
+    <div class="container">
+        <div class="section-label">Get Started</div>
+        <h2>Quick Start</h2>
+        <p class="subtitle">Install the Python SDK and connect your first LLM agent to a robot in minutes.</p>
+
+        <div class="code-block">
+            <div class="header">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                &nbsp;&nbsp;terminal
+            </div>
+            <pre><span class="comment"># Install the SDK</span>
+pip install arp-sdk
+
+<span class="comment"># Or install from source</span>
+git clone https://github.com/mariagorskikh/robotcontextprotocol.git
+<span class="keyword">cd</span> robotcontextprotocol/sdk/python
+pip install -e .</pre>
+        </div>
+
+        <div class="code-block" style="margin-top: 20px;">
+            <div class="header">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                &nbsp;&nbsp;server.py &mdash; Define your robot
+            </div>
+            <pre><span class="keyword">from</span> arp_sdk <span class="keyword">import</span> ARPServer, SafetyMetadata, SafetyLevel
+
+server = ARPServer(name=<span class="string">"my-robot"</span>, robot_model=<span class="string">"Robot Arm v2"</span>)
+
+<span class="decorator">@server.tool</span>(
+    description=<span class="string">"Move arm to [x, y, z]"</span>,
+    safety=SafetyMetadata(level=SafetyLevel.NORMAL),
+    parameters={<span class="string">"target"</span>: {<span class="string">"type"</span>: <span class="string">"array"</span>}},
+)
+<span class="keyword">async def</span> <span class="function">move_to</span>(<span class="param">target</span>: list[float]) -> dict:
+    <span class="comment"># Your robot control code here</span>
+    <span class="keyword">return</span> {<span class="string">"reached"</span>: target}
+
+asyncio.run(server.run())  <span class="comment"># ws://localhost:8765</span></pre>
+        </div>
+
+        <div class="code-block" style="margin-top: 20px;">
+            <div class="header">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                &nbsp;&nbsp;agent.py &mdash; Control from your LLM agent
+            </div>
+            <pre><span class="keyword">from</span> arp_sdk <span class="keyword">import</span> ARPClient
+
+client = ARPClient(<span class="string">"ws://localhost:8765"</span>)
+<span class="keyword">await</span> client.connect()
+<span class="keyword">await</span> client.initialize()
+
+tools = <span class="keyword">await</span> client.list_tools()      <span class="comment"># Discover capabilities</span>
+result = <span class="keyword">await</span> client.call_tool(         <span class="comment"># Execute actions</span>
+    <span class="string">"move_to"</span>, target=[<span class="param">1.0</span>, <span class="param">0.5</span>, <span class="param">0.0</span>]
+)
+print(result.state)  <span class="comment"># "completed"</span></pre>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="links">
+            <a href="https://github.com/mariagorskikh/robotcontextprotocol">GitHub</a>
+            <a href="https://github.com/mariagorskikh/robotcontextprotocol/tree/main/spec">Specification</a>
+            <a href="https://github.com/mariagorskikh/robotcontextprotocol/tree/main/sdk/python">Python SDK</a>
+            <a href="https://github.com/mariagorskikh/robotcontextprotocol/tree/main/examples">Examples</a>
+        </div>
+        <p>ARP is open source under Apache 2.0. Built by <a href="https://github.com/mariagorskikh">Maria Gorskikh</a>.</p>
+    </div>
+</footer>
+
+</body>
+</html>

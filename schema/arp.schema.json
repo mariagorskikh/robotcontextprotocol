@@ -1,0 +1,335 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://autonomousrobotprotocol.org/schema/arp.schema.json",
+  "title": "Autonomous Robot Protocol (ARP) Schema",
+  "description": "JSON Schema for all ARP protocol messages",
+  "version": "0.1.0",
+
+  "$defs": {
+    "Position3D": {
+      "type": "object",
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "z": { "type": "number" }
+      },
+      "required": ["x", "y", "z"]
+    },
+
+    "Quaternion": {
+      "type": "object",
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "z": { "type": "number" },
+        "w": { "type": "number" }
+      },
+      "required": ["x", "y", "z", "w"]
+    },
+
+    "Pose": {
+      "type": "object",
+      "properties": {
+        "position": { "$ref": "#/$defs/Position3D" },
+        "orientation": { "$ref": "#/$defs/Quaternion" },
+        "frame": { "type": "string" }
+      },
+      "required": ["position"]
+    },
+
+    "SafetyLevel": {
+      "type": "string",
+      "enum": ["normal", "elevated", "critical"]
+    },
+
+    "SafetyMetadata": {
+      "type": "object",
+      "properties": {
+        "level": { "$ref": "#/$defs/SafetyLevel" },
+        "requiresConfirmation": { "type": "boolean", "default": false },
+        "reversible": { "type": "boolean", "default": true },
+        "description": { "type": "string" }
+      },
+      "required": ["level"]
+    },
+
+    "ToolState": {
+      "type": "string",
+      "enum": ["idle", "running", "completed", "failed", "cancelled"]
+    },
+
+    "Condition": {
+      "type": "object",
+      "properties": {
+        "field": { "type": "string" },
+        "operator": { "type": "string", "enum": ["eq", "neq", "gt", "lt", "gte", "lte", "in", "exists"] },
+        "value": {}
+      },
+      "required": ["field", "operator", "value"]
+    },
+
+    "Effect": {
+      "type": "object",
+      "properties": {
+        "field": { "type": "string" },
+        "action": { "type": "string", "enum": ["set", "increment", "decrement", "append", "remove"] },
+        "value": {}
+      },
+      "required": ["field", "action"]
+    },
+
+    "PhysicalTool": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "parameters": { "type": "object" },
+        "safety": { "$ref": "#/$defs/SafetyMetadata" },
+        "preconditions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Condition" }
+        },
+        "effects": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Effect" }
+        },
+        "estimatedDuration": { "type": "number", "minimum": 0 }
+      },
+      "required": ["name", "description", "parameters", "safety"]
+    },
+
+    "ContextDataType": {
+      "type": "string",
+      "enum": ["pose", "joints", "pointcloud", "image", "imu", "custom"]
+    },
+
+    "ContextSource": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "dataType": { "$ref": "#/$defs/ContextDataType" },
+        "coordinateFrame": { "type": "string" },
+        "updateRate": { "type": "number", "minimum": 0 },
+        "schema": { "type": "object" }
+      },
+      "required": ["name", "description", "dataType"]
+    },
+
+    "ConstraintType": {
+      "type": "string",
+      "enum": ["velocity_limit", "workspace_bound", "force_limit", "collision_zone", "emergency_stop", "rate_limit"]
+    },
+
+    "ViolationAction": {
+      "type": "string",
+      "enum": ["reject", "clamp", "emergency_stop"]
+    },
+
+    "SafetyConstraint": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "$ref": "#/$defs/ConstraintType" },
+        "enabled": { "type": "boolean", "default": true },
+        "priority": { "type": "integer", "minimum": 0 },
+        "parameters": { "type": "object" },
+        "violationAction": { "$ref": "#/$defs/ViolationAction" }
+      },
+      "required": ["name", "type", "parameters", "violationAction"]
+    },
+
+    "BoundingBox": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "const": "box" },
+        "min": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+        "max": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+        "frame": { "type": "string" }
+      },
+      "required": ["type", "min", "max"]
+    },
+
+    "WorkspaceObject": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "pose": { "$ref": "#/$defs/Pose" },
+        "type": { "type": "string", "enum": ["static", "manipulable", "dynamic"] }
+      },
+      "required": ["name", "type"]
+    },
+
+    "PlanStep": {
+      "type": "object",
+      "properties": {
+        "tool": { "type": "string" },
+        "params": { "type": "object" },
+        "description": { "type": "string" }
+      },
+      "required": ["tool", "params"]
+    },
+
+    "ClientInfo": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" }
+      },
+      "required": ["name", "version"]
+    },
+
+    "ServerInfo": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "robotModel": { "type": "string" },
+        "robotType": { "type": "string" }
+      },
+      "required": ["name", "version"]
+    },
+
+    "Capabilities": {
+      "type": "object",
+      "properties": {
+        "tools": { "type": "boolean" },
+        "context": { "type": "boolean" },
+        "constraints": { "type": "boolean" },
+        "planning": { "type": "boolean" },
+        "confirmation": { "type": "boolean" }
+      }
+    },
+
+    "InitializeParams": {
+      "type": "object",
+      "properties": {
+        "protocolVersion": { "type": "string" },
+        "clientInfo": { "$ref": "#/$defs/ClientInfo" },
+        "capabilities": { "$ref": "#/$defs/Capabilities" }
+      },
+      "required": ["protocolVersion", "clientInfo"]
+    },
+
+    "InitializeResult": {
+      "type": "object",
+      "properties": {
+        "protocolVersion": { "type": "string" },
+        "serverInfo": { "$ref": "#/$defs/ServerInfo" },
+        "capabilities": { "$ref": "#/$defs/Capabilities" }
+      },
+      "required": ["protocolVersion", "serverInfo", "capabilities"]
+    },
+
+    "CallToolParams": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "arguments": { "type": "object" },
+        "callId": { "type": "string" }
+      },
+      "required": ["name", "callId"]
+    },
+
+    "CallToolResult": {
+      "type": "object",
+      "properties": {
+        "callId": { "type": "string" },
+        "state": { "$ref": "#/$defs/ToolState" },
+        "result": {},
+        "error": { "type": "string" },
+        "duration": { "type": "number" }
+      },
+      "required": ["callId", "state"]
+    },
+
+    "ToolProgressParams": {
+      "type": "object",
+      "properties": {
+        "callId": { "type": "string" },
+        "progress": { "type": "number", "minimum": 0, "maximum": 1 },
+        "message": { "type": "string" },
+        "state": { "$ref": "#/$defs/ToolState" }
+      },
+      "required": ["callId", "state"]
+    },
+
+    "SubscribeContextParams": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "maxRate": { "type": "number", "minimum": 0 }
+      },
+      "required": ["name"]
+    },
+
+    "ContextUpdateParams": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "data": {}
+      },
+      "required": ["name", "timestamp", "data"]
+    },
+
+    "RequestPlanParams": {
+      "type": "object",
+      "properties": {
+        "goal": { "type": "string" },
+        "currentState": { "type": "object" },
+        "availableTools": { "type": "array", "items": { "type": "string" } },
+        "constraints": { "type": "array", "items": { "$ref": "#/$defs/SafetyConstraint" } }
+      },
+      "required": ["goal", "availableTools"]
+    },
+
+    "PlanResult": {
+      "type": "object",
+      "properties": {
+        "steps": { "type": "array", "items": { "$ref": "#/$defs/PlanStep" } },
+        "reasoning": { "type": "string" }
+      },
+      "required": ["steps"]
+    },
+
+    "SetWorkspaceParams": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "bounds": { "$ref": "#/$defs/BoundingBox" },
+        "objects": { "type": "array", "items": { "$ref": "#/$defs/WorkspaceObject" } }
+      },
+      "required": ["name", "bounds"]
+    },
+
+    "RequestConfirmationParams": {
+      "type": "object",
+      "properties": {
+        "action": { "type": "string" },
+        "safetyLevel": { "$ref": "#/$defs/SafetyLevel" },
+        "details": { "type": "object" },
+        "timeout": { "type": "number", "minimum": 0 }
+      },
+      "required": ["action", "safetyLevel"]
+    },
+
+    "ConfirmationResult": {
+      "type": "object",
+      "properties": {
+        "confirmed": { "type": "boolean" },
+        "confirmedBy": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["confirmed"]
+    },
+
+    "EmergencyStopParams": {
+      "type": "object",
+      "properties": {
+        "reason": { "type": "string" }
+      },
+      "required": ["reason"]
+    }
+  }
+}
